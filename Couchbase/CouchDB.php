@@ -52,6 +52,18 @@ class Couchbase_CouchDB
     }
 
     /**
+     * Delete a document.
+     *
+     * @param string $doc JSON representation of a document.
+     * @return string JSON success or error message.
+     */
+    function deleteDoc($doc)
+    {
+        $doc = json_decode($doc);
+        return $this->send("DELETE", $this->server->path . "/" . $doc->_id . "?rev=" . $doc->_rev);
+    }
+
+    /**
      * Save a document.
      *
      * @param string $doc JSON representation of a document.
@@ -193,7 +205,7 @@ class Couchbase_CouchDB
             $response .= fgets($s);
         }
 
-        list($this->headers, $this->body) = explode("\r\n\r\n", $response);
+        list($this->headers, $this->body) = array_pad(explode("\r\n\r\n", $response, 2), -2, "");
         if($response == "") {
             // var_dump("                             -------------------------------");
             // var_dump("                             ERROR EMPTY SERVER RESPONSE");
